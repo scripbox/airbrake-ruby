@@ -60,6 +60,7 @@ module Airbrake
     end
 
     def build_post_request(uri, notice)
+      raise "#{uri.inspect}"
       Net::HTTP::Post.new(uri.request_uri).tap do |req|
         req.body = notice.to_json
 
