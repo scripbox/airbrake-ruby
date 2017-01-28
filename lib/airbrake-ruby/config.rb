@@ -9,7 +9,7 @@ module Airbrake
     ##
     # @return [Integer] the project identificator. This value *must* be set.
     attr_accessor :project_id
-
+    attr_accessor :api_key
     ##
     # @return [String] the project key. This value *must* be set.
     attr_accessor :project_key
@@ -87,6 +87,7 @@ module Airbrake
 
       self.project_id = user_config[:project_id]
       self.project_key = user_config[:project_key]
+      self.api_key = user_config[:api_key]
       self.host = 'https://airbrake.io'
 
       self.ignore_environments = []
@@ -105,9 +106,12 @@ module Airbrake
     def endpoint
       @endpoint ||=
         begin
-          self.host = ('https://' << host) if host !~ %r{\Ahttps?://}
-          api = "api/v3/projects/#{project_id}/notices?key=#{project_key}"
-          URI.join(host, api)
+            self.host = ('https://' << host) if host !~ %r{\Ahttps?://}
+            api = ""
+            if !self.api_key
+              api = "api/v3/projects/#{project_id}/notices?key=#{project_key}"
+            end
+            URI.join(host, api)
         end
     end
 
